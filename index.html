@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Saare Raaste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7EFE0;
+    --pine:#2D5240;
+    --pine-dark:#1E3A2C;
+    --amber:#D97D3D;
+    --rose:#B85C6B;
+    --dusk:#1B2A41;
+    --dusk-deep:#101B2C;
+    --fire:#E8C468;
+    --ink:#2B2318;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  .marker{font-family:'Kalam',cursive;}
+  .stage{
+    position:relative;
+    min-height:100vh;
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px 60px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .stage.active{display:flex;}
+
+  /* ---------- shared road motif ---------- */
+  .road-wrap{width:100%;max-width:520px;margin:18px auto 4px;opacity:.85;}
+  .road-wrap svg{width:100%;height:auto;display:block;}
+
+  /* ================= STAGE 1 : ASK ================= */
+  #stage-ask{background:linear-gradient(180deg,#FBF5E7 0%, var(--cream) 55%, #F0E6D2 100%);}
+  .eyebrow{
+    font-family:'Kalam',cursive;
+    font-size:1.05rem;
+    color:var(--rose);
+    letter-spacing:.03em;
+    margin-bottom:6px;
+  }
+  h1.ask-title{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:clamp(2.1rem,6vw,3.4rem);
+    color:var(--pine-dark);
+    margin:0 0 6px;
+    line-height:1.15;
+  }
+  .ask-sub{
+    font-size:.98rem;
+    color:#5b5140;
+    max-width:420px;
+    margin:0 auto 28px;
+    line-height:1.55;
+  }
+  .markers-row{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    margin-bottom:6px;
+  }
+  .pin{font-size:1.6rem;}
+  .btn-zone{
+    position:relative;
+    width:100%;
+    max-width:460px;
+    height:150px;
+    margin-top:8px;
+  }
+  .btn{
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    border:none;
+    border-radius:999px;
+    padding:16px 34px;
+    font-size:1.05rem;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, padding .25s ease, font-size .25s ease;
+    box-shadow:0 6px 18px rgba(45,82,64,.18);
+  }
+  #yesBtn{
+    background:var(--pine);
+    color:var(--cream);
+    position:relative;
+    z-index:2;
+  }
+  #yesBtn:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 10px 24px rgba(45,82,64,.28);}
+  #noBtn{
+    background:transparent;
+    color:var(--rose);
+    border:2px solid var(--rose);
+    position:relative;
+    z-index:3;
+    transition:top .22s cubic-bezier(.34,1.56,.64,1), left .22s cubic-bezier(.34,1.56,.64,1), transform .18s ease;
+  }
+  #noBtn.dodging{
+    position:absolute;
+    top:0;
+    left:0;
+  }
+  .btn-row{display:flex; gap:18px; align-items:center; justify-content:center; position:relative; height:100%;}
+  .chase-caption{
+    font-family:'Kalam',cursive;
+    color:var(--amber);
+    font-size:1rem;
+    min-height:1.4em;
+    margin-top:22px;
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  .chase-caption.show{opacity:1;}
+
+  /* ================= STAGE 2 : WHEEL ================= */
+  #stage-wheel{background:linear-gradient(180deg,#EFE6D0 0%, #E3D6B8 55%, #D8CBA8 100%);}
+  h2.wheel-title{
+    font-family:'Kalam',cursive;
+    font-size:clamp(1.7rem,5vw,2.6rem);
+    color:var(--pine-dark);
+    margin:0 0 4px;
+  }
+  .wheel-sub{color:#5b5140; font-size:.95rem; margin-bottom:22px;}
+  .wheel-holder{position:relative; width:min(300px,72vw); height:min(300px,72vw); margin:10px auto 26px;}
+  .pointer{
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-top:22px solid var(--rose);
+    z-index:5;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));
+  }
+  .wheel{
+    width:100%;height:100%;
+    border-radius:50%;
+    position:relative;
+    border:6px solid var(--pine-dark);
+    box-shadow:0 10px 30px rgba(45,82,64,.3), inset 0 0 0 3px var(--cream);
+    transition:transform 4.2s cubic-bezier(.15,.75,.2,1);
+    background:conic-gradient(
+      var(--pine) 0deg 45deg,
+      var(--amber) 45deg 90deg,
+      var(--rose) 90deg 135deg,
+      var(--pine-dark) 135deg 180deg,
+      var(--amber) 180deg 225deg,
+      var(--pine) 225deg 270deg,
+      var(--rose) 270deg 315deg,
+      var(--pine-dark) 315deg 360deg
+    );
+  }
+  .wheel span.label{
+    position:absolute;
+    top:50%;left:50%;
+    width:50%;
+    height:0;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding-right:14px;
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    color:var(--cream);
+    font-size:.82rem;
+    transform-origin:left center;
+    letter-spacing:.02em;
+  }
+  .hub{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:18%;height:18%;border-radius:50%;
+    background:var(--cream);
+    border:4px solid var(--pine-dark);
+    z-index:4;
+  }
+  #spinBtn{
+    background:var(--rose);
+    color:var(--cream);
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    border:none;border-radius:999px;
+    padding:15px 36px;font-size:1rem;cursor:pointer;
+    box-shadow:0 6px 18px rgba(184,92,107,.3);
+    transition:transform .18s ease;
+  }
+  #spinBtn:hover{transform:translateY(-2px) scale(1.03);}
+  #spinBtn:disabled{opacity:.5;cursor:default;transform:none;}
+
+  .reveal-block{margin-top:26px; max-width:440px;}
+  .reveal-line{
+    font-family:'Kalam',cursive;
+    font-size:1.35rem;
+    color:var(--pine-dark);
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .reveal-line.show{opacity:1;transform:translateY(0);}
+  .hinglish-line{
+    font-family:'Kalam',cursive;
+    font-size:1.15rem;
+    color:var(--rose);
+    margin-top:10px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .5s ease .3s, transform .5s ease .3s;
+  }
+  .hinglish-line.show{opacity:1;transform:translateY(0);}
+
+  .date-block{
+    margin-top:26px;
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+    transition:opacity .5s ease, max-height .6s ease;
+  }
+  .date-block.show{opacity:1; max-height:220px;}
+  .date-block label{
+    display:block;
+    font-size:.9rem;
+    color:#5b5140;
+    margin-bottom:10px;
+  }
+  input[type="date"]{
+    font-family:'Poppins',sans-serif;
+    font-size:1rem;
+    padding:11px 16px;
+    border-radius:12px;
+    border:2px solid var(--pine);
+    background:var(--cream);
+    color:var(--ink);
+    outline:none;
+  }
+  #confirmDateBtn{
+    display:block;
+    margin:18px auto 0;
+    background:var(--pine);
+    color:var(--cream);
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    border:none;border-radius:999px;
+    padding:14px 32px;font-size:1rem;cursor:pointer;
+    box-shadow:0 6px 18px rgba(45,82,64,.25);
+    transition:transform .18s ease;
+  }
+  #confirmDateBtn:hover{transform:translateY(-2px) scale(1.03);}
+
+  /* ================= STAGE 3 : CELEBRATE / COUNTDOWN ================= */
+  #stage-celebrate{
+    background:radial-gradient(ellipse at 50% 20%, #24314a 0%, var(--dusk) 45%, var(--dusk-deep) 100%);
+    color:var(--cream);
+  }
+  .stars{position:absolute; inset:0; z-index:0;}
+  .stars span{
+    position:absolute;
+    width:2px;height:2px;
+    background:var(--fire);
+    border-radius:50%;
+    opacity:.7;
+    animation:twinkle 2.6s infinite ease-in-out;
+  }
+  @keyframes twinkle{0%,100%{opacity:.25;}50%{opacity:1;}}
+
+  .mountains{
+    position:absolute; bottom:0; left:0; width:100%; z-index:1; pointer-events:none;
+  }
+
+  .confetti-piece{
+    position:absolute; top:-20px;
+    width:9px;height:14px;
+    opacity:.9;
+    z-index:6;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(540deg); opacity:.2;}
+  }
+
+  .celebrate-inner{position:relative; z-index:3; max-width:480px;}
+  h2.celebrate-title{
+    font-family:'Kalam',cursive;
+    font-size:clamp(1.9rem,6vw,2.9rem);
+    margin:0 0 6px;
+    color:var(--fire);
+  }
+  .celebrate-sub{
+    font-size:.95rem; color:#cdd6e6; margin-bottom:0;
+    opacity:0; transition:opacity .6s ease;
+  }
+  .trip-card{
+    margin-top:30px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(232,196,104,.35);
+    border-radius:20px;
+    padding:28px 26px 30px;
+    backdrop-filter:blur(2px);
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .trip-card.show{opacity:1; transform:translateY(0);}
+  .trip-dest{
+    font-family:'Kalam',cursive;
+    font-size:1.8rem;
+    color:var(--fire);
+    margin:0 0 4px;
+  }
+  .trip-date{
+    font-size:.92rem;
+    color:#cdd6e6;
+    margin-bottom:20px;
+  }
+  .countdown{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .cd-unit{
+    background:rgba(232,196,104,.12);
+    border:1px solid rgba(232,196,104,.3);
+    border-radius:12px;
+    padding:12px 14px;
+    min-width:64px;
+  }
+  .cd-num{
+    font-family:'Kalam',cursive;
+    font-size:1.6rem;
+    color:var(--fire);
+    display:block;
+    line-height:1;
+  }
+  .cd-label{
+    font-size:.68rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#9fb0c9;
+    margin-top:4px;
+    display:block;
+  }
+  .fire-glow{
+    position:absolute;
+    bottom:-40px; left:50%; transform:translateX(-50%);
+    width:260px; height:180px;
+    background:radial-gradient(ellipse at center, rgba(232,196,104,.35) 0%, rgba(232,196,104,0) 70%);
+    z-index:1;
+    animation:flicker 3s infinite ease-in-out;
+    pointer-events:none;
+  }
+  @keyframes flicker{0%,100%{opacity:.7;}50%{opacity:1;}}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= STAGE 1 ================= -->
+<section class="stage active" id="stage-ask">
+  <h1 class="ask-title">Will you come<br>on a trip with me?</h1>
+
+  <div class="road-wrap">
+    <svg viewBox="0 0 500 60" fill="none">
+      <path d="M10 50 Q 130 10, 250 40 T 490 30" stroke="#2D5240" stroke-width="10" stroke-linecap="round" opacity="0.25"/>
+      <path d="M10 50 Q 130 10, 250 40 T 490 30" stroke="#F7EFE0" stroke-width="2" stroke-dasharray="10 10" stroke-linecap="round"/>
+      <circle cx="10" cy="50" r="7" fill="#B85C6B"/>
+      <circle cx="490" cy="30" r="7" fill="#D97D3D"/>
+    </svg>
+  </div>
+
+  <div class="btn-zone" id="btnZone">
+    <div class="btn-row">
+      <button class="btn" id="yesBtn">Yes, let's go!</button>
+      <button class="btn" id="noBtn">No</button>
+    </div>
+  </div>
+  <div class="chase-caption marker" id="chaseCaption"></div>
+</section>
+
+<!-- ================= STAGE 2 ================= -->
+<section class="stage" id="stage-wheel">
+  <h2 class="wheel-title">Where to, though?</h2>
+  <p class="wheel-sub">Let's let the wheel decide. Spin karo.</p>
+
+  <div class="wheel-holder">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel">
+      <span class="label" style="transform:rotate(-67.5deg);">Chakrata</span>
+      <span class="label" style="transform:rotate(-22.5deg);">Mussoorie</span>
+      <span class="label" style="transform:rotate(22.5deg);">Manali</span>
+      <span class="label" style="transform:rotate(67.5deg);">Chopta</span>
+      <span class="label" style="transform:rotate(112.5deg);">Kasol</span>
+      <span class="label" style="transform:rotate(157.5deg);">Nainital</span>
+      <span class="label" style="transform:rotate(202.5deg);">Rishikesh</span>
+      <span class="label" style="transform:rotate(247.5deg);">Lansdowne</span>
+      <div class="hub"></div>
+    </div>
+  </div>
+
+  <button id="spinBtn">Spin the wheel</button>
+
+  <div class="reveal-block">
+    <div class="reveal-line marker" id="revealLine">It's Chakrata.</div>
+    <div class="hinglish-line" id="hinglishLine">Ye to upar waale ki marzi lagti hai, ab to is saal jaana hi padega!</div>
+
+    <div class="date-block" id="dateBlock">
+      <label for="tripDate">Pick the date, then. This time we're actually going.</label>
+      <input type="date" id="tripDate">
+      <button id="confirmDateBtn">Lock it in</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STAGE 3 ================= -->
+<section class="stage" id="stage-celebrate">
+  <div class="stars" id="stars"></div>
+  <div class="fire-glow"></div>
+  <svg class="mountains" viewBox="0 0 500 140" preserveAspectRatio="none">
+    <polygon points="0,140 0,90 90,30 160,80 230,20 310,90 380,40 460,90 500,60 500,140" fill="#141F33"/>
+    <polygon points="0,140 0,110 120,60 210,100 300,55 400,100 500,80 500,140" fill="#0E1728"/>
+  </svg>
+
+  <div class="celebrate-inner">
+    <h2 class="celebrate-title marker" id="celebrateTitle">Finally.</h2>
+
+
+    <div class="trip-card" id="tripCard">
+      <div class="trip-dest marker">Chakrata 🏔️</div>
+      <div class="trip-date" id="tripDateDisplay"></div>
+      <div class="countdown" id="countdown"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* ---------------- STAGE 1: chase button ---------------- */
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const btnZone = document.getElementById('btnZone');
+  const chaseCaption = document.getElementById('chaseCaption');
+
+  const captions = [
+    "Itni jaldi bhaag na jaao",
+    "Nahi milega ye button, try karte raho",
+    "Ye button kismat mein nahi hai tumhari",
+    "Haar maan lo, Yes hi option hai",
+    "Bhaag raha hai kyunki usse pata hai answer galat hai",
+    "Thoda aur try karo, mazaa aa raha hai"
+  ];
+  let dodgeCount = 0;
+  let yesScale = 1;
+
+  function dodgeNo(){
+    const zoneRect = btnZone.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+
+    if(!noBtn.classList.contains('dodging')){
+      // lock in current on-screen spot as the absolute starting point, so it doesn't jump
+      const startLeft = btnRect.left - zoneRect.left;
+      const startTop = btnRect.top - zoneRect.top;
+      noBtn.classList.add('dodging');
+      noBtn.style.left = startLeft + 'px';
+      noBtn.style.top = startTop + 'px';
+      // force reflow so the browser registers the starting position before we animate away
+      noBtn.offsetHeight;
+    }
+
+    const maxLeft = Math.max(zoneRect.width - btnRect.width - 10, 20);
+    const maxTop = Math.max(zoneRect.height - btnRect.height - 10, 20);
+    const newLeft = 10 + Math.random() * maxLeft;
+    const newTop = 10 + Math.random() * maxTop;
+    noBtn.style.left = newLeft + 'px';
+    noBtn.style.top = newTop + 'px';
+    noBtn.style.transform = 'translate(0,0)';
+
+    dodgeCount++;
+    if(dodgeCount % 2 === 0 && yesScale < 1.5){
+      yesScale += 0.08;
+      yesBtn.style.fontSize = (1.05 * yesScale) + 'rem';
+      yesBtn.style.padding = (16*Math.min(yesScale,1.3)) + 'px ' + (34*Math.min(yesScale,1.3)) + 'px';
+    }
+    const line = captions[Math.min(dodgeCount-1, captions.length-1)];
+    chaseCaption.textContent = line;
+    chaseCaption.classList.add('show');
+  }
+
+  // desktop: proximity-based dodge
+  btnZone.addEventListener('mousemove', (e) => {
+    const r = noBtn.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+    if(dist < 70){
+      dodgeNo();
+    }
+  });
+
+  // touch / click fallback: if user manages to tap it, dodge instead of firing click
+  noBtn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    dodgeNo();
+  });
+  noBtn.addEventListener('click', (e) => { e.preventDefault(); dodgeNo(); });
+
+  yesBtn.addEventListener('click', () => {
+    goToStage('stage-wheel');
+  });
+
+  function goToStage(id){
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  /* ---------------- STAGE 2: wheel ---------------- */
+  const wheel = document.getElementById('wheel');
+  const spinBtn = document.getElementById('spinBtn');
+  const revealLine = document.getElementById('revealLine');
+  const hinglishLine = document.getElementById('hinglishLine');
+  const dateBlock = document.getElementById('dateBlock');
+  const confirmDateBtn = document.getElementById('confirmDateBtn');
+  const tripDateInput = document.getElementById('tripDate');
+
+  // restrict selection to August 2026 only
+  tripDateInput.min = '2026-08-01';
+  tripDateInput.max = '2026-08-31';
+
+  let spun = false;
+  spinBtn.addEventListener('click', () => {
+    if(spun) return;
+    spun = true;
+    spinBtn.disabled = true;
+    // Chakrata segment center sits at 22.5deg clockwise from top.
+    // Rotate so that center lands at top (0deg), plus extra full spins.
+    const extraSpins = 5;
+    const finalRotation = extraSpins*360 + (360 - 22.5);
+    wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+    setTimeout(() => {
+      revealLine.classList.add('show');
+      setTimeout(() => {
+        hinglishLine.classList.add('show');
+        setTimeout(() => {
+          dateBlock.classList.add('show');
+        }, 500);
+      }, 600);
+    }, 4300);
+  });
+
+  function notifyByEmail(dateVal){
+    const prettyDate = new Date(dateVal + 'T00:00:00').toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    fetch('https://formsubmit.co/ajax/khanmudassir631@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        _subject: "She said yes! Chakrata trip confirmed",
+        destination: "Chakrata",
+        confirmed_date: prettyDate,
+        message: "The trip page was confirmed with a date of " + prettyDate + "."
+      })
+    }).catch(() => { /* fail silently either way, don't block her experience */ });
+  }
+
+  confirmDateBtn.addEventListener('click', () => {
+    const val = tripDateInput.value;
+    if(!val){
+      tripDateInput.style.borderColor = '#B85C6B';
+      tripDateInput.focus();
+      return;
+    }
+    window.tripDateValue = val;
+    notifyByEmail(val);
+    goToStage('stage-celebrate');
+    startCelebration();
+  });
+
+  /* ---------------- STAGE 3: celebration + countdown ---------------- */
+  const starsWrap = document.getElementById('stars');
+  for(let i=0;i<50;i++){
+    const s = document.createElement('span');
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = Math.random()*70 + '%';
+    s.style.animationDelay = (Math.random()*2.6) + 's';
+    starsWrap.appendChild(s);
+  }
+
+  const confettiColors = ['#D97D3D','#B85C6B','#E8C468','#F7EFE0','#2D5240'];
+  function launchConfetti(){
+    for(let i=0;i<70;i++){
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random()*100 + '%';
+      p.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+      p.style.animationDuration = (2.4 + Math.random()*1.8) + 's';
+      p.style.animationDelay = (Math.random()*0.6) + 's';
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.getElementById('stage-celebrate').appendChild(p);
+      setTimeout(() => p.remove(), 5000);
+    }
+  }
+
+  let celebrationStarted = false;
+  function startCelebration(){
+    if(celebrationStarted) return;
+    celebrationStarted = true;
+    launchConfetti();
+
+    setTimeout(() => {
+      const tripCard = document.getElementById('tripCard');
+      tripCard.classList.add('show');
+      setupCountdown(window.tripDateValue);
+    }, 1600);
+  }
+
+  function setupCountdown(dateStr){
+    const target = new Date(dateStr + 'T00:00:00');
+    const display = document.getElementById('tripDateDisplay');
+    display.textContent = target.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    const cdWrap = document.getElementById('countdown');
+
+    function render(){
+      const now = new Date();
+      let diff = Math.max(0, target - now);
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60)) % 24);
+      const mins = Math.floor((diff / (1000*60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+
+      cdWrap.innerHTML = `
+        <div class="cd-unit"><span class="cd-num">${days}</span><span class="cd-label">Days</span></div>
+        <div class="cd-unit"><span class="cd-num">${hours}</span><span class="cd-label">Hrs</span></div>
+        <div class="cd-unit"><span class="cd-num">${mins}</span><span class="cd-label">Min</span></div>
+        <div class="cd-unit"><span class="cd-num">${secs}</span><span class="cd-label">Sec</span></div>
+      `;
+    }
+    render();
+    setInterval(render, 1000);
+  }
+</script>
+</body>
+</html>
