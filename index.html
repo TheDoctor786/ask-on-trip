@@ -102,17 +102,18 @@
   }
   #yesBtn:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 10px 24px rgba(45,82,64,.28);}
   #noBtn{
-    background:transparent;
-    color:var(--rose);
+    background:var(--rose);
+    color:var(--cream);
     border:2px solid var(--rose);
     position:relative;
     z-index:3;
     transition:top .22s cubic-bezier(.34,1.56,.64,1), left .22s cubic-bezier(.34,1.56,.64,1), transform .18s ease;
   }
   #noBtn.dodging{
-    position:absolute;
+    position:fixed;
     top:0;
     left:0;
+    z-index:999;
   }
   .btn-row{display:flex; gap:18px; align-items:center; justify-content:center; position:relative; height:100%;}
   .chase-caption{
@@ -258,6 +259,13 @@
   }
   #confirmDateBtn:hover{transform:translateY(-2px) scale(1.03);}
 
+  .date-hint{
+    font-size:.9rem;
+    color:var(--rose);
+    margin:12px 0 0;
+    opacity:.85;
+  }
+
   .date-nudge{
     max-height:0;
     overflow:hidden;
@@ -276,102 +284,92 @@
     margin:0 0 10px;
     line-height:1.4;
   }
-  #useAug14Btn{
-    font-family:'Poppins',sans-serif;
-    font-weight:600;
-    font-size:.85rem;
-    background:transparent;
-    color:var(--pine);
-    border:2px solid var(--pine);
-    border-radius:999px;
-    padding:9px 20px;
-    cursor:pointer;
-    transition:transform .18s ease;
-  }
-  #useAug14Btn:hover{transform:translateY(-1px) scale(1.03);}
+
 
   /* ================= STAGE 3 : CELEBRATE / COUNTDOWN ================= */
   #stage-celebrate{
-    background:radial-gradient(ellipse at 50% 20%, #24314a 0%, var(--dusk) 45%, var(--dusk-deep) 100%);
-    color:var(--cream);
+    background:linear-gradient(180deg, #FFF6E4 0%, #FDEBC8 35%, #F7D9A0 70%, #F0C480 100%);
+    color:var(--ink);
   }
-  .stars{position:absolute; inset:0; z-index:0;}
-  .stars span{
+  .sparkles{position:absolute; inset:0; z-index:0; pointer-events:none;}
+  .sparkles span{
     position:absolute;
-    width:2px;height:2px;
-    background:var(--fire);
-    border-radius:50%;
-    opacity:.7;
-    animation:twinkle 2.6s infinite ease-in-out;
+    font-size:1.1rem;
+    opacity:.85;
+    animation:sparkle-float 3.2s infinite ease-in-out;
   }
-  @keyframes twinkle{0%,100%{opacity:.25;}50%{opacity:1;}}
+  @keyframes sparkle-float{
+    0%,100%{ transform:translateY(0) rotate(0deg); opacity:.5; }
+    50%{ transform:translateY(-14px) rotate(12deg); opacity:1; }
+  }
 
   .mountains{
     position:absolute; bottom:0; left:0; width:100%; z-index:1; pointer-events:none;
   }
 
   .confetti-piece{
-    position:absolute; top:-20px;
-    width:9px;height:14px;
-    opacity:.9;
+    position:absolute; top:-24px;
+    opacity:.95;
     z-index:6;
     animation:fall linear forwards;
   }
   @keyframes fall{
-    to{ transform:translateY(110vh) rotate(540deg); opacity:.2;}
+    0%{ transform:translateY(0) rotate(0deg); }
+    100%{ transform:translateY(115vh) rotate(720deg); opacity:.15;}
   }
 
   .celebrate-inner{position:relative; z-index:3; max-width:480px;}
   h2.celebrate-title{
     font-family:'Kalam',cursive;
-    font-size:clamp(1.9rem,6vw,2.9rem);
-    margin:0 0 6px;
-    color:var(--fire);
-  }
-  .celebrate-sub{
-    font-size:.95rem; color:#cdd6e6; margin-bottom:0;
-    opacity:0; transition:opacity .6s ease;
-  }
-  .trip-card{
-    margin-top:30px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(232,196,104,.35);
-    border-radius:20px;
-    padding:28px 26px 30px;
-    backdrop-filter:blur(2px);
+    font-size:clamp(2.1rem,7vw,3.2rem);
+    margin:0 0 8px;
+    color:var(--rose);
     opacity:0;
-    transform:translateY(14px);
-    transition:opacity .7s ease, transform .7s ease;
+    transform:scale(.7);
+    transition:opacity .5s cubic-bezier(.34,1.56,.64,1), transform .5s cubic-bezier(.34,1.56,.64,1);
   }
-  .trip-card.show{opacity:1; transform:translateY(0);}
+  h2.celebrate-title.show{opacity:1; transform:scale(1);}
+
+  .trip-card{
+    margin-top:26px;
+    background:#FFFBF2;
+    border:2px solid var(--amber);
+    border-radius:22px;
+    padding:30px 26px 32px;
+    box-shadow:0 14px 34px rgba(217,125,61,.22);
+    opacity:0;
+    transform:translateY(18px) scale(.94);
+    transition:opacity .6s cubic-bezier(.34,1.56,.64,1), transform .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  .trip-card.show{opacity:1; transform:translateY(0) scale(1);}
   .trip-dest{
     font-family:'Kalam',cursive;
-    font-size:1.8rem;
-    color:var(--fire);
+    font-size:2rem;
+    color:var(--pine-dark);
     margin:0 0 4px;
   }
   .trip-date{
-    font-size:.92rem;
-    color:#cdd6e6;
-    margin-bottom:20px;
+    font-size:.95rem;
+    color:#7a6a4d;
+    margin-bottom:22px;
   }
   .countdown{
     display:flex;
-    gap:14px;
+    gap:12px;
     justify-content:center;
     flex-wrap:wrap;
   }
   .cd-unit{
-    background:rgba(232,196,104,.12);
-    border:1px solid rgba(232,196,104,.3);
-    border-radius:12px;
-    padding:12px 14px;
+    background:var(--pine);
+    border-radius:14px;
+    padding:13px 15px;
     min-width:64px;
+    box-shadow:0 4px 10px rgba(45,82,64,.25);
   }
   .cd-num{
     font-family:'Kalam',cursive;
-    font-size:1.6rem;
-    color:var(--fire);
+    font-size:1.7rem;
+    color:var(--cream);
     display:block;
     line-height:1;
   }
@@ -379,20 +377,20 @@
     font-size:.68rem;
     letter-spacing:.06em;
     text-transform:uppercase;
-    color:#9fb0c9;
+    color:#cfe0d3;
     margin-top:4px;
     display:block;
   }
   .fire-glow{
     position:absolute;
-    bottom:-40px; left:50%; transform:translateX(-50%);
-    width:260px; height:180px;
-    background:radial-gradient(ellipse at center, rgba(232,196,104,.35) 0%, rgba(232,196,104,0) 70%);
-    z-index:1;
+    top:-60px; left:50%; transform:translateX(-50%);
+    width:340px; height:240px;
+    background:radial-gradient(ellipse at center, rgba(232,196,104,.55) 0%, rgba(232,196,104,0) 70%);
+    z-index:0;
     animation:flicker 3s infinite ease-in-out;
     pointer-events:none;
   }
-  @keyframes flicker{0%,100%{opacity:.7;}50%{opacity:1;}}
+  @keyframes flicker{0%,100%{opacity:.6;}50%{opacity:1;}}
 
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important; transition:none !important;}
@@ -452,9 +450,9 @@
     <div class="date-block" id="dateBlock">
       <label for="tripDate">Pick the date, then. This time we're actually going.</label>
       <input type="date" id="tripDate">
+      <p class="date-hint marker">psst... 14th August was our first date 👀</p>
       <div class="date-nudge" id="dateNudge">
         <p class="nudge-text marker" id="nudgeText"></p>
-        <button type="button" id="useAug14Btn">Use 14th August instead</button>
       </div>
       <button id="confirmDateBtn">Lock it in</button>
     </div>
@@ -463,15 +461,15 @@
 
 <!-- ================= STAGE 3 ================= -->
 <section class="stage" id="stage-celebrate">
-  <div class="stars" id="stars"></div>
+  <div class="sparkles" id="sparkles"></div>
   <div class="fire-glow"></div>
   <svg class="mountains" viewBox="0 0 500 140" preserveAspectRatio="none">
-    <polygon points="0,140 0,90 90,30 160,80 230,20 310,90 380,40 460,90 500,60 500,140" fill="#141F33"/>
-    <polygon points="0,140 0,110 120,60 210,100 300,55 400,100 500,80 500,140" fill="#0E1728"/>
+    <polygon points="0,140 0,90 90,30 160,80 230,20 310,90 380,40 460,90 500,60 500,140" fill="#E8B978" opacity="0.55"/>
+    <polygon points="0,140 0,110 120,60 210,100 300,55 400,100 500,80 500,140" fill="#D99F5C" opacity="0.7"/>
   </svg>
 
   <div class="celebrate-inner">
-    <h2 class="celebrate-title marker" id="celebrateTitle">Finally.</h2>
+    <h2 class="celebrate-title marker" id="celebrateTitle">Finally! 🎉</h2>
 
 
     <div class="trip-card" id="tripCard">
@@ -501,24 +499,44 @@
   let yesScale = 1;
 
   function dodgeNo(){
-    const zoneRect = btnZone.getBoundingClientRect();
     const btnRect = noBtn.getBoundingClientRect();
 
     if(!noBtn.classList.contains('dodging')){
       // lock in current on-screen spot as the absolute starting point, so it doesn't jump
-      const startLeft = btnRect.left - zoneRect.left;
-      const startTop = btnRect.top - zoneRect.top;
       noBtn.classList.add('dodging');
-      noBtn.style.left = startLeft + 'px';
-      noBtn.style.top = startTop + 'px';
+      noBtn.style.left = btnRect.left + 'px';
+      noBtn.style.top = btnRect.top + 'px';
       // force reflow so the browser registers the starting position before we animate away
       noBtn.offsetHeight;
     }
 
-    const maxLeft = Math.max(zoneRect.width - btnRect.width - 10, 20);
-    const maxTop = Math.max(zoneRect.height - btnRect.height - 10, 20);
-    const newLeft = 10 + Math.random() * maxLeft;
-    const newTop = 10 + Math.random() * maxTop;
+    const margin = 16;
+    const maxLeft = Math.max(window.innerWidth - btnRect.width - margin, margin);
+    const maxTop = Math.max(window.innerHeight - btnRect.height - margin, margin);
+
+    // forbidden zone: Yes button's current viewport rect, padded a bit
+    const yesRect = yesBtn.getBoundingClientRect();
+    const padding = 24;
+    const forbidden = {
+      left: yesRect.left - padding,
+      top: yesRect.top - padding,
+      right: yesRect.right + padding,
+      bottom: yesRect.bottom + padding
+    };
+
+    function overlapsForbidden(l, t){
+      const r = l + btnRect.width;
+      const b = t + btnRect.height;
+      return l < forbidden.right && r > forbidden.left && t < forbidden.bottom && b > forbidden.top;
+    }
+
+    let newLeft, newTop, attempts = 0;
+    do {
+      newLeft = margin + Math.random() * maxLeft;
+      newTop = margin + Math.random() * maxTop;
+      attempts++;
+    } while (overlapsForbidden(newLeft, newTop) && attempts < 30);
+
     noBtn.style.left = newLeft + 'px';
     noBtn.style.top = newTop + 'px';
     noBtn.style.transform = 'translate(0,0)';
@@ -534,8 +552,9 @@
     chaseCaption.classList.add('show');
   }
 
-  // desktop: proximity-based dodge
-  btnZone.addEventListener('mousemove', (e) => {
+  // desktop: proximity-based dodge, tracked across the whole page
+  document.addEventListener('mousemove', (e) => {
+    if(!document.getElementById('stage-ask').classList.contains('active')) return;
     const r = noBtn.getBoundingClientRect();
     const cx = r.left + r.width/2;
     const cy = r.top + r.height/2;
@@ -571,25 +590,14 @@
   const confirmDateBtn = document.getElementById('confirmDateBtn');
   const tripDateInput = document.getElementById('tripDate');
 
-  // restrict to today onward, default to 14 Aug 2026 (their first-date anniversary)
+  // restrict to this year only — today through Dec 31, 2026
   const todayStr = new Date().toISOString().split('T')[0];
+  const MAX_DATE = '2026-12-31';
   tripDateInput.min = todayStr;
-  tripDateInput.value = '2026-08-14';
+  tripDateInput.max = MAX_DATE;
 
   const dateNudge = document.getElementById('dateNudge');
   const nudgeText = document.getElementById('nudgeText');
-  const useAug14Btn = document.getElementById('useAug14Btn');
-
-  const nudgeLines = [
-    "Great pick, But I have some other date in mind!",
-    "We'll call it our situationversary",
-    "Ab itna wait kaise kru mai!"
-  ];
-
-  useAug14Btn.addEventListener('click', () => {
-    tripDateInput.value = '2026-08-14';
-    dateNudge.classList.remove('show');
-  });
 
   let spun = false;
   spinBtn.addEventListener('click', () => {
@@ -641,6 +649,7 @@
     const chosen = new Date(val + 'T00:00:00');
     const now = new Date();
     now.setHours(0,0,0,0);
+    const maxAllowed = new Date(MAX_DATE + 'T00:00:00');
 
     if(chosen < now){
       nudgeText.textContent = "Ye toh beet chuki hai! Future ki date choose karo.";
@@ -648,12 +657,8 @@
       return;
     }
 
-    const daysAway = Math.round((chosen - now) / (1000*60*60*24));
-    const FAR_THRESHOLD = 45; // ~6 weeks
-
-    if(daysAway > FAR_THRESHOLD){
-      const line = nudgeLines[Math.floor(Math.random() * nudgeLines.length)];
-      nudgeText.textContent = line;
+    if(chosen > maxAllowed){
+      nudgeText.textContent = "Itni door ki date nahi, is saal ke andar hi chuno na.";
       dateNudge.classList.add('show');
       return;
     }
@@ -667,26 +672,41 @@
   });
 
   /* ---------------- STAGE 3: celebration + countdown ---------------- */
-  const starsWrap = document.getElementById('stars');
-  for(let i=0;i<50;i++){
+  const sparkleEmojis = ['✨','🌟','💫'];
+  const sparklesWrap = document.getElementById('sparkles');
+  for(let i=0;i<18;i++){
     const s = document.createElement('span');
+    s.textContent = sparkleEmojis[Math.floor(Math.random()*sparkleEmojis.length)];
     s.style.left = Math.random()*100 + '%';
-    s.style.top = Math.random()*70 + '%';
-    s.style.animationDelay = (Math.random()*2.6) + 's';
-    starsWrap.appendChild(s);
+    s.style.top = Math.random()*55 + '%';
+    s.style.animationDelay = (Math.random()*3) + 's';
+    s.style.fontSize = (0.8 + Math.random()*0.9) + 'rem';
+    sparklesWrap.appendChild(s);
   }
 
-  const confettiColors = ['#D97D3D','#B85C6B','#E8C468','#F7EFE0','#2D5240'];
+  const confettiColors = ['#D97D3D','#B85C6B','#E8C468','#2D5240','#F0C480'];
+  const confettiEmojis = ['🎉','🎊','🏔️','✨'];
   function launchConfetti(){
-    for(let i=0;i<70;i++){
+    const stage = document.getElementById('stage-celebrate');
+    for(let i=0;i<110;i++){
       const p = document.createElement('div');
       p.className = 'confetti-piece';
       p.style.left = Math.random()*100 + '%';
-      p.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
-      p.style.animationDuration = (2.4 + Math.random()*1.8) + 's';
-      p.style.animationDelay = (Math.random()*0.6) + 's';
-      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      document.getElementById('stage-celebrate').appendChild(p);
+      p.style.animationDuration = (2.2 + Math.random()*2) + 's';
+      p.style.animationDelay = (Math.random()*0.8) + 's';
+
+      if(Math.random() < 0.18){
+        // occasional emoji piece for texture
+        p.textContent = confettiEmojis[Math.floor(Math.random()*confettiEmojis.length)];
+        p.style.fontSize = (1 + Math.random()*0.6) + 'rem';
+      } else {
+        const size = 7 + Math.random()*6;
+        p.style.width = size + 'px';
+        p.style.height = (size * 1.5) + 'px';
+        p.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      }
+      stage.appendChild(p);
       setTimeout(() => p.remove(), 5000);
     }
   }
@@ -696,12 +716,16 @@
     if(celebrationStarted) return;
     celebrationStarted = true;
     launchConfetti();
+    document.getElementById('celebrateTitle').classList.add('show');
+
+    // second smaller burst for extra festivity
+    setTimeout(launchConfetti, 700);
 
     setTimeout(() => {
       const tripCard = document.getElementById('tripCard');
       tripCard.classList.add('show');
       setupCountdown(window.tripDateValue);
-    }, 1600);
+    }, 1400);
   }
 
   function setupCountdown(dateStr){
