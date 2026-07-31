@@ -117,15 +117,29 @@
   }
   .btn-row{display:flex; gap:18px; align-items:center; justify-content:center; position:relative; height:100%;}
   .chase-caption{
+    position:fixed;
+    top:22px;
+    left:50%;
+    z-index:1000;
+    transform:translateX(-50%) translateY(-18px) scale(.9);
+    background:var(--cream);
+    color:var(--rose);
+    border:2px solid var(--rose);
+    border-radius:14px;
+    padding:12px 22px;
     font-family:'Kalam',cursive;
-    color:var(--amber);
-    font-size:1rem;
-    min-height:1.4em;
-    margin-top:22px;
+    font-size:1.05rem;
+    max-width:86vw;
+    text-align:center;
+    box-shadow:0 10px 26px rgba(184,92,107,.28);
     opacity:0;
-    transition:opacity .3s ease;
+    pointer-events:none;
+    transition:opacity .3s cubic-bezier(.34,1.56,.64,1), transform .3s cubic-bezier(.34,1.56,.64,1);
   }
-  .chase-caption.show{opacity:1;}
+  .chase-caption.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0) scale(1);
+  }
 
   /* ================= STAGE 2 : WHEEL ================= */
   #stage-wheel{background:linear-gradient(180deg,#EFE6D0 0%, #E3D6B8 55%, #D8CBA8 100%);}
@@ -202,24 +216,42 @@
 
   .reveal-block{margin-top:26px; max-width:440px;}
   .reveal-line{
+    display:block;
+    width:fit-content;
+    margin-left:auto;
+    margin-right:auto;
     font-family:'Kalam',cursive;
     font-size:1.35rem;
     color:var(--pine-dark);
+    background:var(--cream);
+    border:2px solid var(--pine);
+    border-radius:14px;
+    padding:12px 24px;
+    box-shadow:0 8px 20px rgba(45,82,64,.18);
     opacity:0;
-    transform:translateY(8px);
-    transition:opacity .5s ease, transform .5s ease;
+    transform:translateY(10px) scale(.94);
+    transition:opacity .4s cubic-bezier(.34,1.56,.64,1), transform .4s cubic-bezier(.34,1.56,.64,1);
   }
-  .reveal-line.show{opacity:1;transform:translateY(0);}
+  .reveal-line.show{opacity:1;transform:translateY(0) scale(1);}
   .hinglish-line{
+    display:block;
+    width:fit-content;
+    margin-left:auto;
+    margin-right:auto;
     font-family:'Kalam',cursive;
-    font-size:1.15rem;
+    font-size:1.1rem;
     color:var(--rose);
-    margin-top:10px;
+    background:var(--cream);
+    border:2px solid var(--rose);
+    border-radius:14px;
+    padding:11px 22px;
+    box-shadow:0 8px 20px rgba(184,92,107,.2);
+    margin-top:14px;
     opacity:0;
-    transform:translateY(8px);
-    transition:opacity .5s ease .3s, transform .5s ease .3s;
+    transform:translateY(10px) scale(.94);
+    transition:opacity .4s cubic-bezier(.34,1.56,.64,1) .3s, transform .4s cubic-bezier(.34,1.56,.64,1) .3s;
   }
-  .hinglish-line.show{opacity:1;transform:translateY(0);}
+  .hinglish-line.show{opacity:1;transform:translateY(0) scale(1);}
 
   .date-block{
     margin-top:26px;
@@ -260,10 +292,24 @@
   #confirmDateBtn:hover{transform:translateY(-2px) scale(1.03);}
 
   .date-hint{
-    font-size:.9rem;
+    display:block;
+    width:fit-content;
+    margin:14px auto 0;
+    font-family:'Kalam',cursive;
+    font-size:.95rem;
     color:var(--rose);
-    margin:12px 0 0;
-    opacity:.85;
+    background:var(--cream);
+    border:2px solid var(--rose);
+    border-radius:14px;
+    padding:9px 20px;
+    box-shadow:0 6px 16px rgba(184,92,107,.2);
+    opacity:0;
+    transform:translateY(8px) scale(.94);
+    transition:opacity .4s cubic-bezier(.34,1.56,.64,1) .5s, transform .4s cubic-bezier(.34,1.56,.64,1) .5s;
+  }
+  .date-block.show .date-hint{
+    opacity:1;
+    transform:translateY(0) scale(1);
   }
 
   .date-nudge{
@@ -450,7 +496,7 @@
     <div class="date-block" id="dateBlock">
       <label for="tripDate">Pick the date, then. This time we're actually going.</label>
       <input type="date" id="tripDate">
-      <p class="date-hint marker">14th August was our first date, just saying...👀</p>
+      <p class="date-hint marker">psst... 14th August was our first date 👀</p>
       <div class="date-nudge" id="dateNudge">
         <p class="nudge-text marker" id="nudgeText"></p>
       </div>
@@ -548,8 +594,16 @@
       yesBtn.style.padding = (16*Math.min(yesScale,1.3)) + 'px ' + (34*Math.min(yesScale,1.3)) + 'px';
     }
     const line = captions[Math.min(dodgeCount-1, captions.length-1)];
+    // re-trigger the pop animation every time, even for repeated lines
+    chaseCaption.classList.remove('show');
+    void chaseCaption.offsetWidth; // force reflow so the animation replays
     chaseCaption.textContent = line;
     chaseCaption.classList.add('show');
+
+    clearTimeout(chaseCaption._hideTimer);
+    chaseCaption._hideTimer = setTimeout(() => {
+      chaseCaption.classList.remove('show');
+    }, 1800);
   }
 
   // desktop: proximity-based dodge, tracked across the whole page
